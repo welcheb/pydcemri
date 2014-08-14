@@ -37,22 +37,6 @@ def status_check(k, N, tstart, nupdates=10):
         print '%d s elapsed' % (time.time() - tstart) 
 
 
-def main():
-    import scipy.misc
-    import matplotlib.pyplot as pl
-    import numpy as np
-    img = scipy.misc.lena()
-    nz = 9 
-    n = img.shape[0]
-    img = np.tile(img, [nz, 1, 1])
-    pl.imshow(mosaic(img), cmap='gray')
-    pl.show()
-
-
-if __name__ == '__main__':
-    main()
-
-
 def signal_to_noise_ratio(im1, im2, mask=None, thresh=None):
     ''' Compute SNR of two images (see Dietrich et al. 2007, 
         JMRI, 26, 375) '''
@@ -258,6 +242,8 @@ def fit_R1(images, flip_angles, TR):
     images = images * signal_scale
     images = reshape(images, inshape)
     return (R1map, S0map, covmap)
+
+
 
 
 def process(dcefile, t1file, t1_flip, R, TE, TR, dce_flip,
