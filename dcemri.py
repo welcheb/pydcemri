@@ -1,13 +1,56 @@
 
-# DCE-MRI postprocessing 
+# Pyhton module for DCE-MRI postprocessing 
 #
-# TODO: Copyright
+# Copyright (C) 2014   David S. Smith
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# 
 
 import time
 from pylab import *
 from scipy.integrate import cumtrapz, simps
 from scipy.optimize import curve_fit
-from util import status_check
+
+
+def status_check(k, N, tstart, nupdates=10):
+    increment = int(N/nupdates)
+    if (k+1) % increment == 0:
+        pct_complete = 100.0*float(k+1) / float(N)
+        telapsed = time.time() - tstart
+        ttotal = telapsed * 100.0 / pct_complete
+        trem = ttotal - telapsed
+        print '%.0f%% complete, %d of %d s remain' % \
+            (pct_complete, trem, ttotal)
+    if k == N - 1:
+        print '%d s elapsed' % (time.time() - tstart) 
+
+
+def main():
+    import scipy.misc
+    import matplotlib.pyplot as pl
+    import numpy as np
+    img = scipy.misc.lena()
+    nz = 9 
+    n = img.shape[0]
+    img = np.tile(img, [nz, 1, 1])
+    pl.imshow(mosaic(img), cmap='gray')
+    pl.show()
+
+
+if __name__ == '__main__':
+    main()
 
 
 def signal_to_noise_ratio(im1, im2, mask=None, thresh=None):
