@@ -47,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('-t','--t1_flip',     dest='t1_flip',  help='flip angle(s) of T1 data',            type=float,       metavar='DEGREES', nargs='+')
     parser.add_argument('-D','--dcefile',     dest='dcefile',  help='path to DCE data file in MAT format', type=extant_file, metavar="FILE", required=True)
     parser.add_argument('-T','--t1file',      dest='t1file',   help='path to T1 data file in MAT format',  type=extant_file, metavar="FILE", required=True)
-    parser.add_argument('-A','--aiffile',     dest='t1file',   help='path to AIF data file in MAT format', type=extant_file, metavar="FILE", required=True)
+    parser.add_argument('-A','--aiffile',     dest='aiffile',   help='path to AIF data file in MAT format', type=extant_file, metavar="FILE", required=True)
 
     # parse arguments, e.g.
     # parms = '--dcefile ./invivo/data_dce.mat --t1file ./invivo/data_t1.mat --aiffile ./invivo/AIF.mat --relaxivity 4.76 --TR 7.939 --dce_flip 20.0 --t1_flip 20.0 18 16 14 12 10 8 6 4 2 -p -x -v'
