@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 # Command line interface for PyDCEMRI
 #
@@ -18,39 +19,47 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 # 
 
-
 import argparse
+import os.path
 #import pydce
 
-print 'TODO: calling syntax is wrong'
+def extant_file(x):
+    """
+    'Type' for argparse - checks that file exists but does not open.
+    """
+    if not os.path.exists(x):
+        raise argparse.ArgumentError("{0} does not exist".format(x))
+    return x
 
-parser = argparse.ArgumentParser(description='Process DCE-MRI data.',
-                                epilog='For questions and bug reports, contact David Smith <david.smith@gmail.com>')
-parser.add_argument('-x', dest='extended', action='store_true',
-                   help='Use Extended Tofts-Kety instead of Standard')
-parser.add_argument('-p', dest='plotting', action='store_true',
-                   help='plot intermediate results')
-parser.add_argument('-R', help='Contrast agent relaxivity')
-parser.add_argument('--TR', help='Repetition time (ms)')
-parser.add_argument('--dce-flip', metavar='angle', help='Flip angle (deg) of DCE data')
-parser.add_argument('--t1-flip', metavar='angle', help='Flip angles (deg) of T1 data', nargs='+')
-parser.add_argument('t1file', type=file, help='path to T1 data file in MAT format')
-parser.add_argument('dcefile', type=file, help='path to DCE data file in MAT format')
-parser.add_argument('aiffile', type=file, help='path to AIF data file in MAT format')
+if __name__ == '__main__':
 
+    # create parser object
+    parser = argparse.ArgumentParser(description='Process DCE-MRI data.',
+                                    epilog='For questions and bug reports, contact David Smith <david.smith@gmail.com>')
+                                    
+    # add arguments                                
+    parser.add_argument('-x', '--extended',   dest='extended', help='use Extended Tofts-Kety instead of Standard', action='store_true')
+    parser.add_argument('-p', '--plotting',   dest='plotting', help='plot intermediate results'                  , action='store_true')
+    parser.add_argument('-v', '--verbose',    dest='verbose',  help='show verbose output'                        , action='store_true')
+    parser.add_argument('-R', '--relaxivity', dest='R',        help='contrast agent relaxivity (1/s)',     type=float,       metavar='RELAXIVITY')
+    parser.add_argument('-r', '--TR',         dest='TR',       help='repetition time (ms)',                type=float,       metavar='TIME')
+    parser.add_argument('-d','--dce_flip',    dest='dce_flip', help='flip angle of DCE data',              type=float,       metavar='DEGREES')
+    parser.add_argument('-t','--t1_flip',     dest='t1_flip',  help='flip angle(s) of T1 data',            type=float,       metavar='DEGREES', nargs='+')
+    parser.add_argument('-D','--dcefile',     dest='dcefile',  help='path to DCE data file in MAT format', type=extant_file, metavar="FILE", required=True)
+    parser.add_argument('-T','--t1file',      dest='t1file',   help='path to T1 data file in MAT format',  type=extant_file, metavar="FILE", required=True)
+    parser.add_argument('-A','--aiffile',     dest='t1file',   help='path to AIF data file in MAT format', type=extant_file, metavar="FILE", required=True)
 
+    # parse arguments, e.g.
+    # parms = '--dcefile ./invivo/data_dce.mat --t1file ./invivo/data_t1.mat --aiffile ./invivo/AIF.mat --relaxivity 4.76 --TR 7.939 --dce_flip 20.0 --t1_flip 20.0 18 16 14 12 10 8 6 4 2 -p -x -v'
+    # args = parser.parse_args(parms.split())
+    args = parser.parse_args()
 
-#if __name__ == '__main__':
-    ## SCAN PARAMETERS
-    #parms = 'ex1/data_dce.mat ex1/data_t1.mat ex1/AIF.mat -R 4.76 --TR 7.939 --TE 4.6 --dce-flip 20.0 --t1-flip 20 18 16 14 12 10 8 6 4 2 -p'
-    ##scan_time = 16.42   # s
-    #args = parser.parse_args(parms.split())
-#else:
-args = parser.parse_args()
-
-print args
-
-
+    # print arguments if verbose
+    if args.verbose:
+        args_dict = vars(args)
+        for key in sorted(args_dict):
+            print "%10s = %s" % (key, str(args_dict[key])) 
+        
 #pydce.run_model(args.dcefile, args.t1file, args.t1_flip, R=args.R, 
 #               TR=args.TR, dce_flip=args.dce_flip, 
 #               extended=args.extended, plotting=args.plotting)
