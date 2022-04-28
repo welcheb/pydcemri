@@ -107,12 +107,13 @@ def ext_tofts_integral(t, Cp, Kt=0.1, ve=0.2, vp=0.1,
     for k in range(nt):
         if uniform_sampling:
             tmp = cumtrapz(exp(-Kt*(t[k] - t[:k+1])/ve)*Cp[:k+1],
-                           t[:k+1], initial=0.0) + vp * Cp[:k+1]
+                           t[:k+1], initial=0.0)
             Ct[k] = tmp[-1]
         else:
             Ct[k] = simps(exp(-Kt*(t[k] - t[:k+1])/ve)*Cp[:k+1],
-                          t[:k+1]) + vp * Cp[:k+1]
-    return Ct*Kt
+                          t[:k+1])
+    return Ct*Kt + vp * Cp
+
 
 def tofts_integral(t, Cp, Kt=0.1, ve=0.2, uniform_sampling=True):
     ''' Standard Tofts Model, with time t in min.
